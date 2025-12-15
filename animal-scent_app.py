@@ -95,7 +95,7 @@ if uploaded:
 
         scent = scent_table[animal]
         st.markdown(f"""
-        ### 🌸 어울리는 향
+        ### 어울리는 향
         **{scent['scent']}**
 
         {scent['desc']}
