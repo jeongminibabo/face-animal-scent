@@ -46,6 +46,7 @@ scent_table = {
 # --------------------
 # 동물상 판별 함수 (얼굴 비율 기반)
 # --------------------
+
 def analyze_face(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
@@ -57,15 +58,15 @@ def analyze_face(image):
     ratio = h / w  # 얼굴 세로/가로 비율
 
     if ratio > 1.40:
-    return "여우상"
-elif ratio > 1.30:
-    return "고양이상"
-elif ratio > 1.20:
-    return "강아지상"
-elif ratio > 1.10:
-    return "토끼상"
-else:
-    return "곰상"
+        return "여우상"
+    elif ratio > 1.30:
+        return "고양이상"
+    elif ratio > 1.20:
+        return "강아지상"
+    elif ratio > 1.10:
+        return "토끼상"
+    else:
+        return "곰상"
 
 # --------------------
 # UI
