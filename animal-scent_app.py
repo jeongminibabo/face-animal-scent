@@ -1,22 +1,21 @@
-
 import streamlit as st
 import cv2
-import mediapipe as mp
 import numpy as np
 from PIL import Image
 
 # --------------------
-# 기본 설정
+# 페이지 설정
 # --------------------
 st.set_page_config(page_title="동물상 관상 향 추천", layout="centered")
 st.title("🐾 얼굴 관상 기반 동물상 & 향 추천")
 st.caption("※ 본 서비스는 재미를 위한 AI 분석입니다.")
 
 # --------------------
-# MediaPipe 얼굴 메쉬
+# OpenCV 얼굴 검출기 로드
 # --------------------
-mp_face = mp.solutions.face_mesh
-face_mesh = mp_face.FaceMesh(static_image_mode=True)
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
 
 # --------------------
 # 향 추천 테이블
@@ -45,45 +44,33 @@ scent_table = {
 }
 
 # --------------------
-# 얼굴 분석 함수
+# 동물상 판별 함수 (얼굴 비율 기반)
 # --------------------
 def analyze_face(image):
-    img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    results = face_mesh.process(img)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
-    if not results.multi_face_landmarks:
+    if len(faces) == 0:
         return None
 
-    landmarks = results.multi_face_landmarks[0].landmark
+    x, y, w, h = faces[0]
+    ratio = h / w  # 얼굴 세로/가로 비율
 
-    # 주요 포인트 (눈, 턱)
-    left_eye = np.array([landmarks[33].x, landmarks[33].y])
-    right_eye = np.array([landmarks[263].x, landmarks[263].y])
-    chin = np.array([landmarks[152].x, landmarks[152].y])
-
-    eye_distance = np.linalg.norm(left_eye - right_eye)
-    face_height = np.linalg.norm(chin - (left_eye + right_eye) / 2)
-
-    ratio = face_height / eye_distance
-
-    # --------------------
-    # 규칙 기반 동물상 판별
-    # --------------------
-    if ratio > 2.1:
-    return "여우상"
-elif ratio > 1.85:
-    return "고양이상"
-elif ratio > 1.65:
-    return "강아지상"
-elif ratio > 1.5:
-    return "토끼상"
-else:
-    return "곰상"
+    if ratio > 1.35:
+        return "여우상"
+    elif ratio > 1.25:
+        return "고양이상"
+    elif ratio > 1.15:
+        return "강아지상"
+    elif ratio > 1.05:
+        return "토끼상"
+    else:
+        return "곰상"
 
 # --------------------
 # UI
 # --------------------
-uploaded = st.file_uploader("얼굴 사진을 업로드하세요", type=["jpg", "png", "jpeg"])
+uploaded = st.file_uploader("📸 얼굴 사진을 업로드하세요", type=["jpg", "png", "jpeg"])
 
 if uploaded:
     image = Image.open(uploaded)
@@ -95,17 +82,16 @@ if uploaded:
         animal = analyze_face(image_np)
 
     if animal is None:
-        st.error("얼굴을 인식하지 못했어요")
+        st.error("얼굴을 인식하지 못했어요 😢 정면 사진을 사용해 주세요.")
     else:
-        st.success(f" 분석 결과: **{animal}**")
+        st.success(f"✨ 분석 결과: **{animal}**")
 
         scent = scent_table[animal]
         st.markdown(f"""
-        ### 어울리는 향
+        ### 🌸 어울리는 향
         **{scent['scent']}**
 
         {scent['desc']}
         """)
 
-        st.info("AI 분석 결과는 참고용이며 실제 성격·운명과는 무관합니다.")
-
+        st.info("AI 분석 결과는 참고용이며 실제 관상·성격과는 무관합니다.")
