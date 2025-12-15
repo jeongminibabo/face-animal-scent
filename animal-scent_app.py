@@ -70,13 +70,31 @@ else:
 # --------------------
 # UI
 # --------------------
-uploaded = st.file_uploader("📸 얼굴 사진을 업로드하세요", type=["jpg", "png", "jpeg"])
+
+st.subheader("📸 얼굴 사진 입력")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    uploaded = st.file_uploader(
+        "사진 업로드",
+        type=["jpg", "png", "jpeg"]
+    )
+
+with col2:
+    camera = st.camera_input("사진 찍기")
+
+image = None
 
 if uploaded:
     image = Image.open(uploaded)
+elif camera:
+    image = Image.open(camera)
+
+if image:
     image_np = np.array(image)
 
-    st.image(image, caption="업로드한 이미지", width=300)
+    st.image(image, caption="분석할 이미지", width=300)
 
     with st.spinner("관상을 분석 중입니다..."):
         animal = analyze_face(image_np)
