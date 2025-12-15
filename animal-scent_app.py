@@ -66,13 +66,15 @@ def analyze_face(image):
     # 규칙 기반 동물상 판별
     # --------------------
     if ratio > 2.1:
-        return "여우상"
-    elif ratio > 1.8:
-        return "고양이상"
-    elif ratio > 1.6:
-        return "강아지상"
-    else:
-        return "곰상"
+    return "여우상"
+elif ratio > 1.85:
+    return "고양이상"
+elif ratio > 1.65:
+    return "강아지상"
+elif ratio > 1.5:
+    return "토끼상"
+else:
+    return "곰상"
 
 # --------------------
 # UI
