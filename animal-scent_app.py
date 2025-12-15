@@ -56,16 +56,16 @@ def analyze_face(image):
     x, y, w, h = faces[0]
     ratio = h / w  # 얼굴 세로/가로 비율
 
-    if ratio > 1.35:
-        return "여우상"
-    elif ratio > 1.25:
-        return "고양이상"
-    elif ratio > 1.15:
-        return "강아지상"
-    elif ratio > 1.05:
-        return "토끼상"
-    else:
-        return "곰상"
+    if ratio > 1.40:
+    return "여우상"
+elif ratio > 1.30:
+    return "고양이상"
+elif ratio > 1.20:
+    return "강아지상"
+elif ratio > 1.10:
+    return "토끼상"
+else:
+    return "곰상"
 
 # --------------------
 # UI
