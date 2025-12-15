@@ -1,4 +1,4 @@
-pip install streamlit opencv-python mediapipe numpy
+
 import streamlit as st
 import cv2
 import mediapipe as mp
@@ -23,20 +23,20 @@ face_mesh = mp_face.FaceMesh(static_image_mode=True)
 # --------------------
 scent_table = {
     "고양이상": {
-        "scent": "플로럴 & 머스크",
-        "desc": "세련되고 도도한 분위기를 강조해줘요."
+        "scent": 로지나잇",
+        "desc": "세련되고 도도한 향기로운 장미 향 😽"
     },
     "강아지상": {
-        "scent": "시트러스 & 프루티",
-        "desc": "밝고 친근한 인상과 잘 어울려요."
+        "scent": "생폴드방스",
+        "desc": "에너지 있고 다채로우며 조화를 이루는 과일 향 🐶"
     },
     "여우상": {
-        "scent": "우디 & 스파이시",
-        "desc": "성숙하고 신비로운 이미지를 살려줘요."
+        "scent": "메디나",
+        "desc": "성숙하고 이국적이며 감각적인 무드를 가진 향 🦊"
     },
     "곰상": {
-        "scent": "파우더리 & 바닐라",
-        "desc": "포근하고 안정적인 느낌을 줘요."
+        "scent": "앰버 528",
+        "desc": "딥하게 무게감 있으며 포근한 우디향 🐻 "
     }
 }
 
@@ -77,7 +77,7 @@ def analyze_face(image):
 # --------------------
 # UI
 # --------------------
-uploaded = st.file_uploader("📸 얼굴 사진을 업로드하세요", type=["jpg", "png", "jpeg"])
+uploaded = st.file_uploader("얼굴 사진을 업로드하세요", type=["jpg", "png", "jpeg"])
 
 if uploaded:
     image = Image.open(uploaded)
@@ -89,9 +89,9 @@ if uploaded:
         animal = analyze_face(image_np)
 
     if animal is None:
-        st.error("얼굴을 인식하지 못했어요 😢")
+        st.error("얼굴을 인식하지 못했어요")
     else:
-        st.success(f"✨ 분석 결과: **{animal}**")
+        st.success(f" 분석 결과: **{animal}**")
 
         scent = scent_table[animal]
         st.markdown(f"""
@@ -102,4 +102,4 @@ if uploaded:
         """)
 
         st.info("AI 분석 결과는 참고용이며 실제 성격·운명과는 무관합니다.")
-streamlit run animal_scent_app.py      
+
