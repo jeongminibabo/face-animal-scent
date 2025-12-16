@@ -80,7 +80,7 @@ def analyze_face(image):
 
     if len(faces) == 0:
         return None
-
+    eye_center_y = (cy1 + cy2) / 2
     # 가장 큰 얼굴 선택
     x, y, w, h = max(faces, key=lambda f: f[2] * f[3])
     face_roi = gray[y:y+h, x:x+w]
@@ -122,9 +122,21 @@ def analyze_face(image):
         # --------------------
         # 👁️ 눈 각도 (고양이상 핵심)
         # --------------------
+        # 눈 중심 좌표
+        cx1, cy1 = ex1 + ew1/2, ey1 + eh1/2
+        cx2, cy2 = ex2 + ew2/2, ey2 + eh2/2
+
+        eye_center_y = (cy1 + cy2) / 2  # ⭐ 이 줄 추가
+
+# 비율 계산
+        eye_height_ratio = eye_center_y / h
+        eye_distance_ratio = abs(cx2 - cx1) / w
+        eye_area_ratio = (ew1*eh1 + ew2*eh2) / face_area
+
+# 눈 각도
         dx = cx2 - cx1
         dy = cy2 - cy1
-        angle = np.degrees(np.arctan2(dy, dx))  # 각도 (도)
+        angle = np.degrees(np.arctan2(dy, dx))
 
         # ---- 일반 눈 점수 ----
         if eye_height_ratio < 0.35:
