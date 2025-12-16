@@ -1,7 +1,30 @@
 import streamlit as st
 import cv2
 import numpy as np
-from PIL import Image
+from PIL import Image, ExifTags
+
+def fix_image_orientation(image):
+    try:
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+
+        exif = image._getexif()
+
+        if exif is not None:
+            o = exif.get(orientation)
+
+            if o == 3:
+                image = image.rotate(180, expand=True)
+            elif o == 6:
+                image = image.rotate(270, expand=True)
+            elif o == 8:
+                image = image.rotate(90, expand=True)
+
+    except:
+        pass
+
+    return image
 
 eye_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_eye.xml"
@@ -182,9 +205,9 @@ with col2:
 image = None
 
 if uploaded:
-    image = Image.open(uploaded)
+    image = fix_image_orientation(Image.open(uploaded))
 elif camera:
-    image = Image.open(camera)
+    image = fix_image_orientation(Image.open(camera))
 
 if image:
     image_np = np.array(image)
