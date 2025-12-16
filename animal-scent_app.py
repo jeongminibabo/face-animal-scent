@@ -57,13 +57,13 @@ def analyze_face(img):
 
     # 얼굴 비율
     if face_ratio > 1.35:
-        scores["여우상"] += 2
+        scores["여우상"] += 1
     elif face_ratio > 1.25:
-        scores["고양이상"] += 2
+        scores["고양이상"] += 1
     elif face_ratio > 1.15:
-        scores["강아지상"] += 2
+        scores["강아지상"] += 1
     else:
-        scores["곰상"] += 2
+        scores["곰상"] += 1
 
     # 눈 분석
     if len(eyes) >= 2:
@@ -78,8 +78,8 @@ def analyze_face(img):
             scores["토끼상"] += 2
             scores["강아지상"] += 1
         elif eye_size < h * 0.18:
-            scores["여우상"] += 2
-            scores["고양이상"] += 1
+            scores["여우상"] += 1
+            scores["고양이상"] += 2
         else:
             scores["고양이상"] += 1
 
@@ -87,7 +87,7 @@ def analyze_face(img):
         if eye_gap > w * 0.45:
             scores["강아지상"] += 2
         elif eye_gap < w * 0.30:
-            scores["여우상"] += 1
+            scores["여우상"] += 2
         else:
             scores["고양이상"] += 1
 
