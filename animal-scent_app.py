@@ -96,7 +96,12 @@ def analyze_face(image):
 
     eye_score = 0
     cat_eye_score = 0
-
+    face_ratio = h / w
+    eye_height_ratio = eye_center_y / h
+    eye_distance_ratio = eye_distance / w
+    angle = abs(eye_angle)
+    
+    
     if len(eyes) >= 2:
         eyes = sorted(eyes, key=lambda e: e[0])[:2]
         (ex1, ey1, ew1, eh1), (ex2, ey2, ew2, eh2) = eyes
@@ -142,52 +147,38 @@ def analyze_face(image):
         if eye_area_ratio > 0.05:
             eye_score += 1  # 눈 큼 → 토끼/강아지
 
+
+        # --------------------
+    # 최종 동물상 분기
     # --------------------
-    # 점수 테이블
-    # --------------------
-    scores = {
-        "여우상": 0,
-        "고양이상": 0,
-        "강아지상": 0,
-        "토끼상": 0,
-        "곰상": 0
-    }
 
-    # 얼굴 비율 점수
-    if ratio > 1.4:
-        scores["여우상"] += 2
-    elif ratio > 1.3:
-        scores["고양이상"] += 2
-    elif ratio > 1.2:
-        scores["강아지상"] += 2
-    elif ratio > 1.1:
-        scores["토끼상"] += 1
-        scores["고양이상"] += 1
-    
-    else:
-        scores["곰상"] += 2
+    # 🦊 여우상 (조건부 특수)
+    if (
+        face_ratio >= 1.4 and
+        eye_height_ratio < 0.33 and
+        abs(angle) < 8
+    ):
+        return "여우상"
 
-    # 눈 점수 반영
-    if eye_score >= 3 and ratio > 1.15:
-        scores["토끼상"] += 2
-    elif eye_score >= 3:
-        scores["고양이상"] += 2
-    elif eye_score == 2:
-        scores["고양이상"] += 1
-        scores["강아지상"] += 1
-    elif eye_score == 1:
-        scores["여우상"] += 1
-    else:
-        scores["곰상"] += 1
+    # 🐱 고양이상 (눈 각도 우선)
+    if (
+        abs(angle) >= 6 and
+        eye_height_ratio < 0.38
+    ):
+        return "고양이상"
 
-        # 고양이 눈 각도 반영
-    if cat_eye_score >= 2:
-        scores["고양이상"] += 2
-    elif cat_eye_score == 1:
-        scores["고양이상"] += 1
+    # 🐶 강아지상
+    if (
+        eye_distance_ratio >= 0.38 or
+        eye_height_ratio > 0.38
+    ):
+        return "강아지상"
+        # 🐰 토끼상
+    if eye_area_ratio > 0.05 and face_ratio > 1.15:
+        return "토끼상"
 
-    return max(scores, key=scores.get)
-
+    # 🐻 곰상 (기본값)
+    return "곰상"
 # --------------------
 # UI
 # --------------------
