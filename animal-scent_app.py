@@ -146,3 +146,21 @@ if image:
         st.info("본 결과는 단순 특징 기반 추정으로 실제 인상과 다를 수 있습니다.")
     else:
         st.error("얼굴을 인식하지 못했습니다. 정면 사진을 사용해 주세요.")
+
+st.markdown(f"""
+<div style="
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-top: 20px;
+    text-align: center;
+">
+    <h2>✨ 당신의 동물상은</h2>
+    <h1>{animal}</h1>
+    <hr style="margin:15px 0;">
+    <h3>🌸 추천 향</h3>
+    <h2>{scent}</h2>
+    <p style="font-size:16px;">{desc}</p>
+</div>
+""", unsafe_allow_html=True)
