@@ -161,8 +161,8 @@ def analyze_face(image):
     elif ratio > 1.2:
         scores["강아지상"] += 2
     elif ratio > 1.1:
-    scores["토끼상"] += 1
-    scores["강아지상"] += 1
+        scores["토끼상"] += 1
+        scores["강아지상"] += 1
     
     else:
         scores["곰상"] += 2
