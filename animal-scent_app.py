@@ -207,7 +207,7 @@ image = None
 if uploaded:
     image = fix_image_orientation(Image.open(uploaded))
 elif camera:
-    image = fix_image_orientation(Image.open(camera))
+    image = Image.open(camera)  # ❌ EXIF 보정 금지
 
 if image:
     image_np = np.array(image)
