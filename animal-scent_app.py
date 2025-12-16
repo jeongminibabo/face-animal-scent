@@ -3,6 +3,10 @@ import cv2
 import numpy as np
 from PIL import Image
 
+eye_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_eye.xml"
+)
+
 # --------------------
 # 페이지 설정
 # --------------------
@@ -55,14 +59,45 @@ def analyze_face(image):
         return None
 
     # 가장 큰 얼굴 선택
-    x, y, w, h = max(faces, key=lambda f: f[2]*f[3])
+    x, y, w, h = max(faces, key=lambda f: f[2] * f[3])
+    face_roi = gray[y:y+h, x:x+w]
 
-    ratio = h / w
-    area = w * h
+    ratio = h / w  # 얼굴 길이 비율
+    face_area = w * h
     img_h, img_w = gray.shape
 
-    face_y_ratio = y / img_h  # 얼굴이 위에 있으면 이마 길다 판단
+    # --------------------
+    # 눈 검출
+    # --------------------
+    eyes = eye_cascade.detectMultiScale(face_roi, 1.2, 5)
 
+    eye_score = 0
+
+    if len(eyes) >= 2:
+        # 눈 2개 사용
+        eyes = sorted(eyes, key=lambda e: e[0])[:2]
+        (ex1, ey1, ew1, eh1), (ex2, ey2, ew2, eh2) = eyes
+
+        # 눈 중심 좌표
+        eye_center_y = (ey1 + ey2) / 2
+        eye_height_ratio = eye_center_y / h   # 눈이 위에 있으면 값 작음
+
+        eye_distance = abs(ex2 - ex1)
+        eye_distance_ratio = eye_distance / w
+
+        eye_area_ratio = (ew1*eh1 + ew2*eh2) / face_area
+
+        # ---- 눈 기반 점수 ----
+        if eye_height_ratio < 0.35:
+            eye_score += 1  # 눈이 위 → 고양이/여우
+        if eye_distance_ratio > 0.35:
+            eye_score += 1  # 눈 간 거리 큼 → 강아지/토끼
+        if eye_area_ratio > 0.05:
+            eye_score += 1  # 눈 큼 → 토끼/강아지
+
+    # --------------------
+    # 점수 테이블
+    # --------------------
     scores = {
         "여우상": 0,
         "고양이상": 0,
@@ -71,7 +106,7 @@ def analyze_face(image):
         "곰상": 0
     }
 
-    # 얼굴 길이 비율
+    # 얼굴 비율 점수
     if ratio > 1.4:
         scores["여우상"] += 2
     elif ratio > 1.3:
@@ -83,21 +118,18 @@ def analyze_face(image):
     else:
         scores["곰상"] += 2
 
-    # 얼굴 면적 (큰 얼굴 → 곰상 쪽)
-    if area > img_w * img_h * 0.18:
-        scores["곰상"] += 1
-    else:
-        scores["토끼상"] += 1
-
-    # 얼굴 위치 (위에 있으면 이마 넓음 → 여우/고양이)
-    if face_y_ratio < 0.25:
-        scores["여우상"] += 1
-        scores["고양이상"] += 1
-    else:
+    # 눈 점수 반영
+    if eye_score >= 3:
+        scores["토끼상"] += 2
         scores["강아지상"] += 1
+    elif eye_score == 2:
+        scores["고양이상"] += 1
+        scores["강아지상"] += 1
+    elif eye_score == 1:
+        scores["여우상"] += 1
+    else:
         scores["곰상"] += 1
 
-    # 가장 높은 점수 동물상 선택
     return max(scores, key=scores.get)
 
 # --------------------
