@@ -3,6 +3,20 @@ import cv2
 import numpy as np
 from PIL import Image
 
+st.markdown("""
+<style>
+    body {
+        background-color: #FFF6F0;
+    }
+    .stApp {
+        background-color: #FFF6F0;
+    }
+    h1, h2, h3 {
+        font-family: 'Pretendard', sans-serif;
+        text-align: center;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
