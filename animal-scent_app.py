@@ -3,38 +3,6 @@ import cv2
 import numpy as np
 from PIL import Image
 
-st.markdown("""
-<style>
-    body {
-        background-color: #FFF6F0;
-    }
-    .stApp {
-        background-color: #FFF6F0;
-    }
-    h1, h2, h3 {
-        font-family: 'Pretendard', sans-serif;
-        text-align: center;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<style>
-    body {
-        background-color: #faf7f2;
-    }
-    .main {
-        padding-top: 20px;
-    }
-    h1 {
-        font-family: 'Pretendard', sans-serif;
-        text-align: center;
-    }
-    h3 {
-        text-align: center;
-    }
-</style>
-""", unsafe_allow_html=True)
 
 # --------------------
 # 페이지 설정
@@ -158,9 +126,41 @@ if image:
         st.success(f"✨ 분석 결과: {animal}")
         st.markdown(f"### 🌸 추천 향\n**{scent}**\n\n{desc}")
         st.info("본 결과는 단순 특징 기반 추정으로 실제 인상과 다를 수 있습니다.")
+        st.markdown("""
+<style>
+    body {
+        background-color: #FFF6F0;
+    }
+    .stApp {
+        background-color: #FFF6F0;
+    }
+    h1, h2, h3 {
+        font-family: 'Pretendard', sans-serif;
+        text-align: center;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+    body {
+        background-color: #faf7f2;
+    }
+    .main {
+        padding-top: 20px;
+    }
+    h1 {
+        font-family: 'Pretendard', sans-serif;
+        text-align: center;
+    }
+    h3 {
+        text-align: center;
+    }
+</style>
+""", unsafe_allow_html=True)
+
     else:
         st.error("얼굴을 인식하지 못했습니다. 정면 사진을 사용해 주세요.")
-
 st.markdown(f"""
 <div style="
     background-color: white;
