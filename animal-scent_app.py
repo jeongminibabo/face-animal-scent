@@ -54,19 +54,51 @@ def analyze_face(image):
     if len(faces) == 0:
         return None
 
-    x, y, w, h = faces[0]
-    ratio = h / w  # 얼굴 세로/가로 비율
+    # 가장 큰 얼굴 선택
+    x, y, w, h = max(faces, key=lambda f: f[2]*f[3])
 
-    if ratio > 1.40:
-        return "여우상"
-    elif ratio > 1.30:
-        return "고양이상"
-    elif ratio > 1.20:
-        return "강아지상"
-    elif ratio > 1.10:
-        return "토끼상"
+    ratio = h / w
+    area = w * h
+    img_h, img_w = gray.shape
+
+    face_y_ratio = y / img_h  # 얼굴이 위에 있으면 이마 길다 판단
+
+    scores = {
+        "여우상": 0,
+        "고양이상": 0,
+        "강아지상": 0,
+        "토끼상": 0,
+        "곰상": 0
+    }
+
+    # 얼굴 길이 비율
+    if ratio > 1.4:
+        scores["여우상"] += 2
+    elif ratio > 1.3:
+        scores["고양이상"] += 2
+    elif ratio > 1.2:
+        scores["강아지상"] += 2
+    elif ratio > 1.1:
+        scores["토끼상"] += 2
     else:
-        return "곰상"
+        scores["곰상"] += 2
+
+    # 얼굴 면적 (큰 얼굴 → 곰상 쪽)
+    if area > img_w * img_h * 0.18:
+        scores["곰상"] += 1
+    else:
+        scores["토끼상"] += 1
+
+    # 얼굴 위치 (위에 있으면 이마 넓음 → 여우/고양이)
+    if face_y_ratio < 0.25:
+        scores["여우상"] += 1
+        scores["고양이상"] += 1
+    else:
+        scores["강아지상"] += 1
+        scores["곰상"] += 1
+
+    # 가장 높은 점수 동물상 선택
+    return max(scores, key=scores.get)
 
 # --------------------
 # UI
