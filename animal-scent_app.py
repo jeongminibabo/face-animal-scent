@@ -3,11 +3,35 @@ import cv2
 import numpy as np
 from PIL import Image
 
+
+st.markdown("""
+<style>
+    body {
+        background-color: #faf7f2;
+    }
+    .main {
+        padding-top: 20px;
+    }
+    h1 {
+        font-family: 'Pretendard', sans-serif;
+        text-align: center;
+    }
+    h3 {
+        text-align: center;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # --------------------
 # 페이지 설정
 # --------------------
 st.set_page_config(page_title="동물상 관상 향 추천", layout="centered")
-st.title("🐾 얼굴 관상 기반 동물상 & 향 추천")
+
+st.markdown("""
+<h1>🐾 ANIMAL SCENT FINDER</h1>
+<h3>얼굴 인상으로 알아보는 나만의 향</h3>
+""", unsafe_allow_html=True)
+
 st.caption("※ 본 서비스는 재미를 위한 단순 특징 기반 분석입니다.")
 
 # --------------------
