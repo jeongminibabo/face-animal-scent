@@ -72,21 +72,45 @@ def analyze_face(image):
     eyes = eye_cascade.detectMultiScale(face_roi, 1.2, 5)
 
     eye_score = 0
+    cat_eye_score = 0
 
     if len(eyes) >= 2:
-        # 눈 2개 사용
         eyes = sorted(eyes, key=lambda e: e[0])[:2]
         (ex1, ey1, ew1, eh1), (ex2, ey2, ew2, eh2) = eyes
 
         # 눈 중심 좌표
-        eye_center_y = (ey1 + ey2) / 2
-        eye_height_ratio = eye_center_y / h   # 눈이 위에 있으면 값 작음
+        cx1, cy1 = ex1 + ew1/2, ey1 + eh1/2
+        cx2, cy2 = ex2 + ew2/2, ey2 + eh2/2
 
-        eye_distance = abs(ex2 - ex1)
-        eye_distance_ratio = eye_distance / w
+        # 눈 높이 비율
+        eye_height_ratio = ((cy1 + cy2) / 2) / h
 
+        # 눈 간 거리
+        eye_distance_ratio = abs(cx2 - cx1) / w
+
+        # 눈 면적 비율
         eye_area_ratio = (ew1*eh1 + ew2*eh2) / face_area
 
+        # --------------------
+        # 👁️ 눈 각도 (고양이상 핵심)
+        # --------------------
+        dx = cx2 - cx1
+        dy = cy2 - cy1
+        angle = np.degrees(np.arctan2(dy, dx))  # 각도 (도)
+
+        # ---- 일반 눈 점수 ----
+        if eye_height_ratio < 0.35:
+            eye_score += 1
+        if eye_distance_ratio > 0.35:
+            eye_score += 1
+        if eye_area_ratio > 0.05:
+            eye_score += 1
+
+        # ---- 고양이 눈 점수 ----
+        if angle < -5:   # 오른쪽 눈이 더 위 (눈꼬리 상승)
+            cat_eye_score += 2
+        elif angle < -2:
+            cat_eye_score += 1
         # ---- 눈 기반 점수 ----
         if eye_height_ratio < 0.35:
             eye_score += 1  # 눈이 위 → 고양이/여우
@@ -129,6 +153,12 @@ def analyze_face(image):
         scores["여우상"] += 1
     else:
         scores["곰상"] += 1
+
+        # 고양이 눈 각도 반영
+    if cat_eye_score >= 2:
+        scores["고양이상"] += 2
+    elif cat_eye_score == 1:
+        scores["고양이상"] += 1
 
     return max(scores, key=scores.get)
 
