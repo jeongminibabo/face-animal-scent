@@ -87,7 +87,7 @@ def analyze_face(img):
         if eye_gap > w * 0.45:
             scores["강아지상"] += 2
         elif eye_gap < w * 0.30:
-            scores["여우상"] += 2
+            scores["여우상"] += 1
         else:
             scores["고양이상"] += 1
 
