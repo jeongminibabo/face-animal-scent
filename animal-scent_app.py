@@ -159,7 +159,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-    else:
+    elif:
         st.error("얼굴을 인식하지 못했습니다. 정면 사진을 사용해 주세요.")
 st.markdown(f"""
 <div style="
