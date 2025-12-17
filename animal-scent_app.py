@@ -145,15 +145,6 @@ if image:
             margin-top:20px;
             text-align:center;
         ">
-    <h2>✨ 당신의 동물상은</h2>
-    <h1>{animal}</h1>
-    <hr>
-    <h3>🌸 추천 향</h3>
-    <h2>{scent}</h2>
-    <p>{desc}</p>
-</div>
-""", unsafe_allow_html=True)
-
 
             <h2>✨ 당신의 동물상은</h2>
             <h1>{animal}</h1>
