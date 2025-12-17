@@ -72,16 +72,16 @@ def analyze_face(img):
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
     if len(faces) == 0:
-        return None
+        return None, None
 
     x, y, w, h = faces[0]
     face_ratio = h / w
     face_roi = gray[y:y+h, x:x+w]
     eyes = eye_cascade.detectMultiScale(face_roi, 1.1, 5)
 
-    scores = {k: 0 for k in scent_table.keys()}
+    scores = {k: 0.0 for k in scent_table.keys()}
 
-    # 얼굴 비율
+    # ① 얼굴 비율 (0~1)
     if face_ratio > 1.35:
         scores["여우상"] += 1
     elif face_ratio > 1.25:
@@ -91,24 +91,30 @@ def analyze_face(img):
     else:
         scores["곰상"] += 1
 
-    # 눈 분석
+    # ② 눈 분석
     if len(eyes) >= 2:
         eyes = sorted(eyes, key=lambda e: e[0])[:2]
         (_, _, _, h1), (_, _, _, h2) = eyes
         eye_size = (h1 + h2) / 2
 
         if eye_size > h * 0.25:
-            scores["토끼상"] += 2
-            scores["강아지상"] += 1
+            scores["토끼상"] += 1
         elif eye_size < h * 0.18:
-            scores["여우상"] += 1
-            scores["고양이상"] += 2
+            scores["여우상"] += 0.7
+            scores["고양이상"] += 0.3
         else:
             scores["고양이상"] += 1
     else:
-        scores["곰상"] += 1
+        scores["곰상"] += 0.5
 
-    return max(scores, key=scores.get)
+    # ③ 퍼센트 변환
+    total = sum(scores.values())
+    percentages = {k: round(v / total * 100, 1) for k, v in scores.items()}
+
+    # 가장 높은 퍼센트 선택
+    best_animal = max(percentages, key=percentages.get)
+
+    return best_animal, percentages
 
 # --------------------
 # UI 입력
@@ -131,9 +137,8 @@ if image:
 
     with st.spinner("얼굴 특징 분석 중..."):
         animal = analyze_face(img_np)
-
-    if animal:
-        scent, desc = scent_table[animal]
+        if animal:
+            scent, desc = scent_table[animal]
 
         border_color = animal_colors[animal]
         st.markdown(f"""
