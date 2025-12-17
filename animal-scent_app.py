@@ -140,14 +140,14 @@ if image:
                     border_color = animal_colors[animal]
                     st.markdown(f"""
                     <div style="
-                    background-color:white;
-                    padding:20px;
-                    border-radius:18px;
-                    border: 4px solid {border_color};
-                    box-shadow:0 4px 12px rgba(0,0,0,0.08);
-                    margin-top:20px;
-                    text-align:center
-                ">
+                        background-color:white;
+                        padding:20px;
+                        border-radius:18px;
+                        border: 4px solid {border_color};
+                        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+                        margin-top:20px;
+                        text-align:center
+                     ">
 
             <h2>✨ 당신의 동물상은</h2>
             <h1>{animal}</h1>
