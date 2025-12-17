@@ -159,5 +159,5 @@ if image:
             <p>{desc}</p>
         </div>
         """, unsafe_allow_html=True)
-    else:
-        st.error("얼굴을 인식하지 못했습니다. 정면 사진을 사용해 주세요.")
+        else:
+            st.error("얼굴을 인식하지 못했습니다. 정면 사진을 사용해 주세요.")
