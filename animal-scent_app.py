@@ -135,7 +135,6 @@ if image:
     if animal:
         scent, desc = scent_table[animal]
 
-        st.markdown(f"""
         border_color = animal_colors[animal]
         st.markdown(f"""
                     border_color = animal_colors[animal]
