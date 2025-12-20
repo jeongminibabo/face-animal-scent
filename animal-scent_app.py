@@ -137,28 +137,27 @@ if image:
 
     with st.spinner("얼굴 특징 분석 중..."):
     animal, percentages = analyze_face(img_np)
+        if animal:
+            scent, desc = scent_table[animal]
+            border_color = animal_colors[animal]
 
-    if animal:
-        scent, desc = scent_table[animal]
-        border_color = animal_colors[animal]
+            st.markdown(f"""
+            <div style="background-color:white;
+                padding:20px;
+                border-radius:18px;
+                border: 4px solid {border_color};
+                box-shadow:0 4px 12px rgba(0,0,0,0.08);
+                margin-top:20px;
+                text-align:center;
+            ">
+                <h2>✨ 당신의 동물상은</h2>
+                <h1>{animal}</h1>
+                <hr>
+                <h3>🌸 추천 향</h3>
+                <h2>{scent}</h2>
+                <p>{desc}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-        st.markdown(f"""
-        <div style="background-color:white;
-            padding:20px;
-            border-radius:18px;
-            border: 4px solid {border_color};
-            box-shadow:0 4px 12px rgba(0,0,0,0.08);
-            margin-top:20px;
-            text-align:center;
-        ">
-            <h2>✨ 당신의 동물상은</h2>
-            <h1>{animal}</h1>
-            <hr>
-            <h3>🌸 추천 향</h3>
-            <h2>{scent}</h2>
-            <p>{desc}</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    else:
-        st.error("얼굴을 인식하지 못했습니다. 정면 사진을 사용해 주세요.")
+else:
+    st.error("얼굴을 인식하지 못했습니다. 정면 사진을 사용해 주세요.")
