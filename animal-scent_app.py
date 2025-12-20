@@ -136,7 +136,7 @@ if image:
     st.image(image, caption="분석 이미지", width=300)
 
     with st.spinner("얼굴 특징 분석 중..."):
-    animal, percentages = analyze_face(img_np)
+        animal, percentages = analyze_face(img_np)
         if animal:
             scent, desc = scent_table[animal]
             border_color = animal_colors[animal]
